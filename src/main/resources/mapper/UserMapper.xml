@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.paul.paul.dao.UserDao">
+    <sql id="BASE_TABLE">
+    t_user t
+  </sql>
+
+    <sql id="BASE_COLUMN">
+    t.user_id,t.user_name,t.password,t.phone
+  </sql>
+    <resultMap id="tUserResult" type="com.paul.paul.model.UserVO">
+        <id property="userId" column="user_id"/>
+        <result property="userName" column="user_name"/>
+        <result property="password" column="password"/>
+        <result property="phone" column="phone"/>
+    </resultMap>
+
+    <insert id="insert">
+        INSERT INTO
+        <include refid="BASE_TABLE"/>
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            userName,password,
+            <if test="phone != null">
+                phone,
+            </if>
+        </trim>
+        <trim prefix="VALUES(" suffix=")" suffixOverrides=",">
+            #{userName, jdbcType=VARCHAR},#{password, jdbcType=VARCHAR},
+            <if test="phone != null">
+                #{phone, jdbcType=VARCHAR},
+            </if>
+        </trim>
+    </insert>
+
+    <select id="findById" resultMap="tUserResult" parameterType="map">
+        SELECT t.*
+        FROM
+        <include refid="BASE_TABLE"/>
+        where t.user_id = #{userId}
+    </select>
+
+    <select id="selectUsers" resultType="com.paul.paul.model.UserVO">
+        SELECT
+        <include refid="BASE_COLUMN"/>
+        FROM
+        <include refid="BASE_TABLE"/>
+    </select>
+
+
+</mapper>
